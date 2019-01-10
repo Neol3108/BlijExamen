@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import in.hageste.noel.blijexamen.R;
 import in.hageste.noel.blijexamen.models.Route;
@@ -34,9 +37,17 @@ public class RouteListAdapter extends RecyclerView.Adapter<RouteListAdapter.Cust
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder viewHolder, int i) {
         Route route = routes.get(i);
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm", Locale.US);
 
         viewHolder.name.setText(route.getName());
         viewHolder.animalList.setText(route.getFeedingsList());
+        viewHolder.time.setText(
+                String.format(
+                        context.getResources().getString(R.string.timeDisplay),
+                        (route.getBeginTime() != null ? sdf.format(route.getBeginTime().getTime()) : ""),
+                        (route.getEndTime() != null ? sdf.format(route.getEndTime().getTime()) : "")
+                )
+        );
 
         viewHolder.bind(route, listener);
     }

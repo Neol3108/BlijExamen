@@ -28,4 +28,15 @@
         android:layout_marginStart="-20dp"
         android:layout_marginTop="10dp" />
 
+    <TextView
+        android:id="@+id/noRoutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/noRoutes"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textAlignment="center"
+        android:visibility="gone" />
+
 </RelativeLayout>

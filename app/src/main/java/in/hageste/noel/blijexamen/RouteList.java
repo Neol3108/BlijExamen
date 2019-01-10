@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -36,7 +38,8 @@ public class RouteList extends AppCompatActivity {
         routeListView.addItemDecoration(dividerItemDecoration);
 
         // Set routeList adapter
-        routeListAdapter = new RouteListAdapter(this, Route.all(), new RouteListAdapter.OnItemClickListener() {
+        ArrayList<Route> routes = Route.all(false);
+        routeListAdapter = new RouteListAdapter(this, routes, new RouteListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Route route) {
                 Intent intent = new Intent(RouteList.this, RouteView.class);
@@ -45,5 +48,7 @@ public class RouteList extends AppCompatActivity {
             }
         });
         routeListView.setAdapter(routeListAdapter);
+
+        if(routes.size() <= 0) findViewById(R.id.noRoutes).setVisibility(View.VISIBLE);
     }
 }

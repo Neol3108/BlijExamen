@@ -4,4 +4,6 @@
     <string name="welcome">Welcome bich</string>
     <string name="im_in">Ik ben binnen</string>
     <string name="routes">Routes</string>
+    <string name="timeDisplay">%1$s - %2$s</string>
+    <string name="noRoutes">Geen routes op dit moment</string>
 </resources>

@@ -67,21 +67,23 @@ public class RouteView extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         map.getUiSettings().setMapToolbarEnabled(false);
         map.getUiSettings().setScrollGesturesEnabled(false);
-        map.setMinZoomPreference(14.0f);
-        map.setMaxZoomPreference(15.0f);
+        map.getUiSettings().setMyLocationButtonEnabled(false);
+
+        route.setMapSettings(map);
+
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             public boolean onMarkerClick(Marker marker) {
                 marker.showInfoWindow();
                 return true;
             }
         });
+        map.setMyLocationEnabled(true);
 
         int nr = 1;
         for(Feeding feeding : route.getFeedings()) {
             map.addMarker(new MarkerOptions().position(feeding.getAnimal().getLocation()).title(feeding.getAnimal().getName())).setIcon(BitmapDescriptorFactory.fromBitmap(getIconBitmap(nr)));
             nr++;
         }
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.926159, 4.446775), 14.7F));
     }
 
     private Bitmap getIconBitmap(int nr) {

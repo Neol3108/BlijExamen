@@ -35,9 +35,10 @@ public class FeedingsListAdapter extends RecyclerView.Adapter<FeedingsListAdapte
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder viewHolder, int i) {
         Feeding feeding = feedings.get(i);
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm", Locale.US);
 
         viewHolder.name.setText(feeding.getAnimal().getName());
-        viewHolder.time.setText(new SimpleDateFormat("hh:mm", Locale.US).format(feeding.getTime().getTime()));
+        viewHolder.time.setText(String.format(context.getResources().getString(R.string.timeDisplay), sdf.format(feeding.getTime().getTime()), sdf.format(feeding.getEndTime().getTime())));
     }
 
     @Override
