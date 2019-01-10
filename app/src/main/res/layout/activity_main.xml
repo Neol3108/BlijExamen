@@ -15,9 +15,8 @@
         android:layout_marginTop="40dp"
         android:text="@string/blijdorp"
         android:textAllCaps="true"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textColor="#303030"
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/welcome"
@@ -26,17 +25,18 @@
         android:layout_below="@+id/main"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp"
+        android:textColor="#707070"
+        android:textSize="20sp"
         android:text="@string/welcome" />
 
     <Button
         android:id="@+id/imInButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
+        android:onClick="onEnter"
+        android:text="@string/im_in"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="122dp"
-        android:layout_marginBottom="150dp"
-        android:text="@string/im_in" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="150dp" />
 
 </RelativeLayout>

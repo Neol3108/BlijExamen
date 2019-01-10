@@ -16,7 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RouteList"></activity>
+        <activity android:name=".RouteList" />
+        <activity android:name=".RouteView"></activity>
+        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="@string/MAPS_API_KEY" />
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
     </application>
 
 </manifest>
