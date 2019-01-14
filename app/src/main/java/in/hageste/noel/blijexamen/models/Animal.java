@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.SparseArray;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public class Animal {
     private double locLat;
     private double locLong;
 
-    public Animal(int id, String name, double locLat, double locLong) {
+    private Animal(int id, String name, double locLat, double locLong) {
         this.id = id;
         this.name = name;
         this.locLat = locLat;
@@ -36,7 +36,7 @@ public class Animal {
         return name;
     }
 
-    public static Animal findById(int id) {
+    static Animal findById(int id) {
         if(cache.get(id) != null) {
             return cache.get(id);
         } else {

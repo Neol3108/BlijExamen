@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -62,14 +61,14 @@ public class RouteListAdapter extends RecyclerView.Adapter<RouteListAdapter.Cust
         protected TextView animalList;
         protected TextView time;
 
-        public CustomViewHolder(View view) {
+        CustomViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
             animalList = view.findViewById(R.id.animalList);
             time = view.findViewById(R.id.time);
         }
 
-        public void bind(final Route item, final OnItemClickListener listener) {
+        void bind(final Route item, final OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(item);

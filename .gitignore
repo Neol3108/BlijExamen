@@ -9,4 +9,4 @@
 /build
 /captures
 .externalNativeBuild
-/app/src/main/res/values/google_maps_API.xml
+app/src/main/res/values/google_maps_API.xml

@@ -10,7 +10,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import in.hageste.noel.blijexamen.DBHelper;
 
@@ -24,7 +23,7 @@ public class Route {
     private float zoomMin;
     private float zoomMax;
 
-    public Route(int id, String name, double la, double lo, float zoomMin, float zoomMax) {
+    private Route(int id, String name, double la, double lo, float zoomMin, float zoomMax) {
         this.id = id;
         this.name = name;
         this.feedings = Feeding.route(id);
@@ -47,7 +46,7 @@ public class Route {
         StringBuilder sb = new StringBuilder();
 
         for (Feeding feeding : feedings) {
-            sb.append(feeding.getAnimal().getName() + (feedings.indexOf(feeding) == feedings.size()-1 ? "" : ", "));
+            sb.append(feeding.getAnimal().getName()).append(feedings.indexOf(feeding) == feedings.size()-1 ? "" : ", ");
         }
 
         return sb.toString();
@@ -78,6 +77,10 @@ public class Route {
     }
 
     public void setMapSettings(GoogleMap map) {
+        this.setMapSettings(map, true);
+    }
+
+    private void setMapSettings(GoogleMap map, boolean zoomLimit) {
         double la = (locLat != 0 ? locLat : 51.926159);
         double lo = (locLong != 0 ? locLong : 4.446775);
         float zoomMin = (this.zoomMin != 0 ? this.zoomMin : 14.6f);
@@ -85,8 +88,10 @@ public class Route {
 
         float zoom = zoomMin + ((zoomMax - zoomMin) / 2);
 
-        map.setMinZoomPreference(zoomMin);
-        map.setMaxZoomPreference(zoomMax);
+        if(zoomLimit) {
+            map.setMinZoomPreference(zoomMin);
+            map.setMaxZoomPreference(zoomMax);
+        }
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(la, lo), zoom));
     }
 

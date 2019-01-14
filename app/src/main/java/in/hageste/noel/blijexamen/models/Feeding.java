@@ -2,9 +2,9 @@ package in.hageste.noel.blijexamen.models;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
-import java.lang.reflect.Array;
+import com.google.android.gms.maps.model.Marker;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -17,11 +17,12 @@ public class Feeding {
     private int duration;
     private Animal animal;
 
-    public Feeding(int id, int duration, int time, Animal animal) {
+    private Marker marker;
+
+    private Feeding(int id, int duration, int time, Animal animal) {
         this.id = id;
         this.animal = animal;
 
-//        Log.i("DURATION", String.valueOf(duration));
         this.duration = duration;
 
         this.time = Calendar.getInstance();
@@ -49,7 +50,15 @@ public class Feeding {
         return endTime;
     }
 
-    protected static ArrayList<Feeding> route(int id) {
+    public void setMarker(Marker marker) {
+        this.marker = marker;
+    }
+
+    public Marker getMarker() {
+        return marker;
+    }
+
+    static ArrayList<Feeding> route(int id) {
         ArrayList<Feeding> result = new ArrayList<>();
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         Cursor feedings = db.rawQuery("SELECT feedingtimes.id, animal_id, time, duration FROM route_feedingtimes JOIN feedingtimes ON feedingtimes.id = route_feedingtimes.feedingtime_id WHERE route_id = ? ORDER BY time", new String[]{String.valueOf(id)});
