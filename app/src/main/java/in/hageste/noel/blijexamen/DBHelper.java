@@ -10,7 +10,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper sInstance;
 
 
-    public static synchronized DBHelper setInstance(Context context) {
+    static synchronized DBHelper setInstance(Context context) {
         if (sInstance == null) {
             sInstance = new DBHelper(context.getApplicationContext());
         }
@@ -99,45 +99,45 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         ContentValues flion1 = new ContentValues();
-        flion1.put("time", "600");
+        flion1.put("time", 600);
         flion1.put("duration", 5);
         flion1.put("animal_id", 1);
 
         ContentValues flion2 = new ContentValues();
-        flion2.put("time", "845");
+        flion2.put("time", 845);
         flion2.put("duration", 5);
         flion2.put("animal_id", 1);
 
 
         ContentValues fpolar1 = new ContentValues();
-        fpolar1.put("time", "605");
+        fpolar1.put("time", 605);
         fpolar1.put("duration", 5);
         fpolar1.put("animal_id", 2);
 
 
         ContentValues fdolphin1 = new ContentValues();
-        fdolphin1.put("time", "610");
+        fdolphin1.put("time", 610);
         fdolphin1.put("duration", 5);
         fdolphin1.put("animal_id", 3);
 
         ContentValues fdolphin2 = new ContentValues();
-        fdolphin2.put("time", "840");
+        fdolphin2.put("time", 840);
         fdolphin2.put("duration", 5);
         fdolphin2.put("animal_id", 3);
 
 
         ContentValues fbeheerders = new ContentValues();
-        fbeheerders.put("time", "720");
+        fbeheerders.put("time", 960);
         fbeheerders.put("duration", 10);
         fbeheerders.put("animal_id", 4);
 
         ContentValues frekenen = new ContentValues();
-        frekenen.put("time", "735");
+        frekenen.put("time", 975);
         frekenen.put("duration", 5);
         frekenen.put("animal_id", 5);
 
         ContentValues fadmin = new ContentValues();
-        fadmin.put("time", "745");
+        fadmin.put("time", 985);
         fadmin.put("duration", 10);
         fadmin.put("animal_id", 6);
 
