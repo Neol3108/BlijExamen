@@ -63,13 +63,22 @@ public class RouteList extends AppCompatActivity {
             @Override
             public void run() {
                 timeDisplay.setText(getTime());
-                handler.postDelayed(this, 1000);
+                handler.postDelayed(this, 1000 * 60);
             }
-        }, 1000);
+        }, milliSecondsToNextMinute());
     }
 
     private static String getTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm", Locale.US);
         return sdf.format(Calendar.getInstance().getTime());
+    }
+
+    private static Long milliSecondsToNextMinute() {
+        Calendar now = Calendar.getInstance();
+        Calendar then = Calendar.getInstance();
+        then.set(Calendar.SECOND, 0);
+        then.set(Calendar.MILLISECOND, 0);
+        then.add(Calendar.MINUTE, 1);
+        return then.getTime().getTime() - now.getTime().getTime();
     }
 }
