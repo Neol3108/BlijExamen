@@ -38,4 +38,13 @@
         android:textAlignment="center"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/timeDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/routeList"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp" />
+
 </RelativeLayout>

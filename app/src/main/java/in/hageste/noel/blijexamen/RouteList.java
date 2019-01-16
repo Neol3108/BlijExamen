@@ -1,14 +1,19 @@
 package in.hageste.noel.blijexamen;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 import in.hageste.noel.blijexamen.adapters.RouteListAdapter;
 import in.hageste.noel.blijexamen.models.Route;
@@ -17,6 +22,8 @@ public class RouteList extends AppCompatActivity {
 
     private RecyclerView routeListView;
     private RouteListAdapter routeListAdapter;
+    private TextView timeDisplay;
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,5 +54,22 @@ public class RouteList extends AppCompatActivity {
         routeListView.setAdapter(routeListAdapter);
 
         if(routes.size() <= 0) findViewById(R.id.noRoutes).setVisibility(View.VISIBLE);
+
+        // Time display
+        timeDisplay = findViewById(R.id.timeDisplay);
+        timeDisplay.setText(getTime());
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                timeDisplay.setText(getTime());
+                handler.postDelayed(this, 1000);
+            }
+        }, 1000);
+    }
+
+    private static String getTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm", Locale.US);
+        return sdf.format(Calendar.getInstance().getTime());
     }
 }
