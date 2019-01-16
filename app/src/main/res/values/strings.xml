@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">BlijExamen</string>
     <string name="blijdorp">Blijdorp</string>
-    <string name="welcome">Welcome bich</string>
+    <string name="welcome">Welcome hier</string>
     <string name="im_in">Ik ben binnen</string>
     <string name="routes">Routes</string>
     <string name="timeDisplay">%1$s - %2$s</string>
