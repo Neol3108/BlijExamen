@@ -13,15 +13,36 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Dash;
+import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
+import com.google.maps.android.PolyUtil;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.LatLng;
+import com.google.maps.model.TravelMode;
+
+import org.joda.time.DateTime;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import in.hageste.noel.blijexamen.adapters.FeedingsListAdapter;
 import in.hageste.noel.blijexamen.models.Feeding;
@@ -32,7 +53,9 @@ public class RouteView extends AppCompatActivity implements OnMapReadyCallback, 
     private Route route;
     private RecyclerView feedingListView;
     private FeedingsListAdapter feedingsListAdapter;
-//    private GeoApiContext geoApiContext;
+    private GeoApiContext geoApiContext;
+    private GoogleMap gMap;
+    private PolylineOptions po;
 
     @SuppressLint("MissingPermission")
     @Override
@@ -53,12 +76,8 @@ public class RouteView extends AppCompatActivity implements OnMapReadyCallback, 
             locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1L, 0F, this);
         }
 
-//        geoApiContext = new GeoApiContext()
-//                .setQueryRateLimit(10)
-//                .setApiKey(getString(R.string.MAPS_API_KEY))
-//                .setConnectTimeout(1, TimeUnit.SECONDS)
-//                .setReadTimeout(1, TimeUnit.SECONDS)
-//                .setWriteTimeout(1, TimeUnit.SECONDS);
+        geoApiContext = new GeoApiContext()
+                .setApiKey(getString(R.string.MAPS_API_KEY));
 
         // Find route
         int id = getIntent().getIntExtra("id", -1);
@@ -81,17 +100,24 @@ public class RouteView extends AppCompatActivity implements OnMapReadyCallback, 
             // Set routeList adapter
             feedingsListAdapter = new FeedingsListAdapter(this, route.getFeedings());
             feedingListView.setAdapter(feedingsListAdapter);
-            feedingsListAdapter.setOnItemClickListener(new FeedingsListAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(Feeding feeding) {
-                    feeding.getMarker().showInfoWindow();
-                }
-            });
+            feedingsListAdapter.setOnItemClickListener(feeding -> feeding.getMarker().showInfoWindow());
+
+            // RequestDirections
+            requestDirections();
+
+            if(gMap != null) {
+                gMap.addPolyline(decoratePolyline(po));
+            }
         }
     }
 
     @Override
     public void onMapReady(GoogleMap map) {
+        gMap = map;
+
+        if(po != null) {
+            map.addPolyline(decoratePolyline(po));
+        }
 
         map.getUiSettings().setMapToolbarEnabled(false);
         map.getUiSettings().setScrollGesturesEnabled(false);
@@ -99,11 +125,9 @@ public class RouteView extends AppCompatActivity implements OnMapReadyCallback, 
 
         route.setMapSettings(map);
 
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            public boolean onMarkerClick(Marker marker) {
-                marker.showInfoWindow();
-                return true;
-            }
+        map.setOnMarkerClickListener(marker -> {
+            marker.showInfoWindow();
+            return true;
         });
         map.setMyLocationEnabled(true);
 
@@ -115,37 +139,43 @@ public class RouteView extends AppCompatActivity implements OnMapReadyCallback, 
             feeding.setMarker(marker);
             nr++;
         }
-
-//        DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext).mode(TravelMode.WALKING).departureTime(new DateTime());
-//        int index = 0;
-//        for(Feeding feeding : route.getFeedings()) {
-//            LatLng loc = feeding.getAnimal().getLocation();
-//            if(index == 0) {
-//                request.origin(loc);
-//            } else if(index == route.getFeedings().size()-1) {
-//                request.destination(loc);
-//            } else {
-//                request.waypoints(loc);
-//            }
-//            index++;
-//        }
-//
-//        try {
-//            DirectionsResult result = request.await();
-//            if(result != null && result.routes != null) {
-//                map.addPolyline(new PolylineOptions().addAll(PolyUtil.decode(result.routes[0].overviewPolyline.getEncodedPath())));
-//            }
-//
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ApiException e) {
-//            e.printStackTrace();
-//        }
     }
 
-    private Bitmap getIconBitmap(int nr) {
+    private void requestDirections() {
+        DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext).mode(TravelMode.WALKING).departureTime(new DateTime());
+        int index = 0;
+        for(Feeding feeding : route.getFeedings()) {
+            LatLng loc = feeding.getAnimal().getLocation();
+            if(index == 0) {
+                request.origin(loc);
+            } else if(index == route.getFeedings().size()-1) {
+                request.destination(loc);
+            } else {
+                request.waypoints(loc);
+            }
+            index++;
+        }
+
+        try {
+            DirectionsResult result = request.await();
+            po = new PolylineOptions();
+            for (DirectionsRoute dr : result.routes) {
+                po.addAll(PolyUtil.decode(dr.overviewPolyline.getEncodedPath()));
+            }
+        } catch (ApiException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static PolylineOptions decoratePolyline(PolylineOptions po) {
+        return po.color(Color.rgb(64, 64, 255)).pattern(getDirectionPattern()).width(5);
+    }
+
+    private static Bitmap getIconBitmap(int nr) {
         Bitmap bmp = Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmp);
 
@@ -161,6 +191,10 @@ public class RouteView extends AppCompatActivity implements OnMapReadyCallback, 
         canvas.drawText(String.valueOf(nr), 12, 40, textColor);
 
         return bmp;
+    }
+
+    private static List<PatternItem> getDirectionPattern() {
+        return Arrays.asList(new Gap(10), new Dash(20));
     }
 
     @Override

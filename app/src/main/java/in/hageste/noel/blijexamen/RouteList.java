@@ -43,13 +43,10 @@ public class RouteList extends AppCompatActivity {
 
         // Set routeList adapter
         ArrayList<Route> routes = Route.all(true);
-        routeListAdapter = new RouteListAdapter(this, routes, new RouteListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Route route) {
-                Intent intent = new Intent(RouteList.this, RouteView.class);
-                intent.putExtra("id", route.getId());
-                startActivity(intent);
-            }
+        routeListAdapter = new RouteListAdapter(this, routes, route -> {
+            Intent intent = new Intent(RouteList.this, RouteView.class);
+            intent.putExtra("id", route.getId());
+            startActivity(intent);
         });
         routeListView.setAdapter(routeListAdapter);
 
@@ -69,8 +66,7 @@ public class RouteList extends AppCompatActivity {
     }
 
     private static String getTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm", Locale.US);
-        return sdf.format(Calendar.getInstance().getTime());
+        return new SimpleDateFormat("hh:mm", Locale.US).format(Calendar.getInstance().getTime());
     }
 
     private static Long milliSecondsToNextMinute() {
