@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -29,7 +28,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
-import com.google.maps.PendingResult;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsResult;
@@ -37,12 +35,10 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.TravelMode;
 
-import org.joda.time.DateTime;
-
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import in.hageste.noel.blijexamen.adapters.FeedingsListAdapter;
 import in.hageste.noel.blijexamen.models.Feeding;
@@ -51,8 +47,6 @@ import in.hageste.noel.blijexamen.models.Route;
 public class RouteView extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
     private Route route;
-    private RecyclerView feedingListView;
-    private FeedingsListAdapter feedingsListAdapter;
     private GeoApiContext geoApiContext;
     private GoogleMap gMap;
     private PolylineOptions po;
@@ -76,8 +70,10 @@ public class RouteView extends AppCompatActivity implements OnMapReadyCallback, 
             locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1L, 0F, this);
         }
 
-        geoApiContext = new GeoApiContext()
-                .setApiKey(getString(R.string.MAPS_API_KEY));
+
+        geoApiContext = new GeoApiContext.Builder()
+                .apiKey(getString(R.string.MAPS_API_KEY))
+                .build();
 
         // Find route
         int id = getIntent().getIntExtra("id", -1);
@@ -89,7 +85,7 @@ public class RouteView extends AppCompatActivity implements OnMapReadyCallback, 
             TextView name = findViewById(R.id.name);
             name.setText(route.getName());
 
-            feedingListView = findViewById(R.id.feedingList);
+            RecyclerView feedingListView = findViewById(R.id.feedingList);
             // Decorate routeList
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -98,7 +94,7 @@ public class RouteView extends AppCompatActivity implements OnMapReadyCallback, 
             feedingListView.addItemDecoration(dividerItemDecoration);
 
             // Set routeList adapter
-            feedingsListAdapter = new FeedingsListAdapter(this, route.getFeedings());
+            FeedingsListAdapter feedingsListAdapter = new FeedingsListAdapter(this, route.getFeedings());
             feedingListView.setAdapter(feedingsListAdapter);
             feedingsListAdapter.setOnItemClickListener(feeding -> feeding.getMarker().showInfoWindow());
 
@@ -142,7 +138,7 @@ public class RouteView extends AppCompatActivity implements OnMapReadyCallback, 
     }
 
     private void requestDirections() {
-        DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext).mode(TravelMode.WALKING).departureTime(new DateTime());
+        DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext).mode(TravelMode.WALKING).departureTime(Instant.now());
         int index = 0;
         for(Feeding feeding : route.getFeedings()) {
             LatLng loc = feeding.getAnimal().getLocation();
